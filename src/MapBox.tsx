@@ -3,19 +3,26 @@ import Map, { ViewState, ViewStateChangeEvent, MapLayerMouseEvent, Source, Layer
 
 
 import { myKey } from './private/key'
-
-import React from 'react';
+import {overlayData, geoLayer} from './overlays' 
+ 
 
 export default function MapBox() {
   // Attributes of Mapbox
   const [viewState, setViewState] = useState<ViewState>({
-    longitude: -111.9261,
-    latitude: 33.5013,
+    longitude: -71.4128,
+    latitude: 41.8240,
     zoom: 10,
     bearing: 0,
     pitch: 0,
     padding: {top: 1, bottom: 20, left: 1, right: 1}
   });  
+
+  const [overlay, setOverlay] = useState<GeoJSON.FeatureCollection | undefined>(undefined)
+
+    // Run this _once_, and never refresh (empty dependency list)
+    useEffect(() => {
+      setOverlay(overlayData)
+    }, [])
 
   return (
     <div className="mapbox">
@@ -32,8 +39,13 @@ export default function MapBox() {
         onClick={(ev: MapLayerMouseEvent) => console.log(ev)}
         style={{width:window.innerWidth, height:window.innerHeight*0.9}} 
         mapStyle={'mapbox://styles/mapbox/light-v10'}>
+          <Source id="geo_data" type="geojson" data={overlay}>
+                    <Layer {...geoLayer} />
+                  </Source>
       </Map>       
+
     </div>
+    
   );
 }
 
