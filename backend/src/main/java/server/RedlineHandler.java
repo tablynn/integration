@@ -83,14 +83,14 @@ public class RedlineHandler implements Route{
         Float minLongFloat = Float.parseFloat(minLong);
         Float maxLongFloat = Float.parseFloat(maxLong);
 
-        List<Feature> filteredFeatures;
+        List<Feature> filteredFeatures = new ArrayList<Feature>();
         // FINISH: filtering out loop 
         loop: for (Feature feature : this.redLiningData.features()){
             if (feature.geometry() == null){
                 continue;
             }
                 List<List<Float>> totalBounds = feature.geometry().coordinates().get(0).get(0);
-                for (List<Float> coordinates : bounds){
+                for (List<Float> coordinates : totalBounds){
                     float lon = coordinates.get(0);
                     float lat = coordinates.get(1);
                     if (lon < minLongFloat || lon > minLongFloat || lat < minLatFloat || lat > minLatFloat){
@@ -108,6 +108,6 @@ public class RedlineHandler implements Route{
 
     public record FeatureCollection(String type, List<Feature> features){}
     public record Feature(String type, Geometry geometry, Map<String, Object> properties){}
-    public record Geometry(String type, List<Float> coordinates){}
+    public record Geometry(String type, List<List<List<List<Float>>>> coordinates){}
 
 }

@@ -23,6 +23,7 @@ import spark.Response;
 import spark.Route;
 import typefactories.ListStringFact;
 
+
 //http://localhost:3231/weather?latitude=36&longitude=-119
 //http://localhost:3231/weather?latitude=38&longitude=-77
 
