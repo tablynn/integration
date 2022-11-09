@@ -31,7 +31,7 @@ public class Server {
     Spark.get("loadCSV", new LoadHandler(csvData));
     Spark.get("getCSV", new GetHandler(csvData));
     Spark.get("weather", new WeatherHandler());
-    Spark.get("redlineData", new RedlineHandler());
+    Spark.get("redlineData", new RedlineHandler()); //backend/src/main/java/server/RedlineHandler.java
     Spark.init();
     Spark.awaitInitialization();
     System.out.println("Server started.");
