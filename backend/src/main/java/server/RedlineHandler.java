@@ -89,10 +89,20 @@ public class RedlineHandler implements Route{
             if (feature.geometry() == null){
                 continue;
             }
+                List<List<Float>> totalBounds = feature.geometry().coordinates().get(0).get(0);
+                for (List<Float> coordinates : bounds){
+                    float lon = coordinates.get(0);
+                    float lat = coordinates.get(1);
+                    if (lon < minLongFloat || lon > minLongFloat || lat < minLatFloat || lat > minLatFloat){
+                        continue;
+                    }
+                    
+                }
+                filteredFeatures.add(feature);
+            
         }
 
-        return null;
-        //filteredFeatures;
+        return filteredFeatures;
     }
      
 
