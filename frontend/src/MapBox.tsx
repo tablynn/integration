@@ -3,7 +3,7 @@ import Map, { ViewState, ViewStateChangeEvent, MapLayerMouseEvent, Source, Layer
 import { FeatureCollection } from 'geojson';
 
 import { myKey } from './private/key'
-import {overlayData, geoLayer} from './overlays' 
+import {overlayData, geoLayer, fetchRedLineData} from './overlays' 
 import mapboxgl from 'mapbox-gl';
 
 const initLon: number =  -71.4128;
@@ -16,11 +16,13 @@ interface AreaInformation {
   name: string
 }
 
-interface ViewStateType{
-  longitude: number,
-  latitude: number,
-  zoom: number
-}
+// interface ViewStateType{
+//   longitude: number,
+//   latitude: number,
+//   zoom: number
+// }
+
+
 
 const onClickFunc = (e: MapLayerMouseEvent, mapRef: RefObject<MapRef>, setAreaData: Dispatch<SetStateAction<AreaInformation>> ): void => {
   const bbox: [PointLike, PointLike] = [
@@ -32,7 +34,7 @@ const onClickFunc = (e: MapLayerMouseEvent, mapRef: RefObject<MapRef>, setAreaDa
     layers: ["geo_data"],
   });
 
-  console.log("before if" + mapRef);
+  console.log("before if" );
   if (choosenFeatures !== undefined){
     const feature: MapboxGeoJSONFeature = choosenFeatures[0]; // bbox
     const featureProperties: any = feature.properties;
@@ -48,32 +50,35 @@ const onClickFunc = (e: MapLayerMouseEvent, mapRef: RefObject<MapRef>, setAreaDa
   }
 }
 
-interface BoundaryType {
-  west: number,
-  east: number,
-  south: number,
-  north: number
-}
+// interface BoundaryType {
+//   west: number,
+//   east: number,
+//   south: number,
+//   north: number
+// }
 
-function getLargerBoundary(viewState: ViewStateType): BoundaryType {
-  return {
-    west: viewState.longitude - Math.pow(2, 11 - viewState.zoom),
-    east: viewState.longitude + Math.pow(2, 11 - viewState.zoom),
-    south: viewState.latitude - Math.pow(2, 11 - viewState.zoom),
-    north: viewState.latitude + Math.pow(2, 11 - viewState.zoom)
-  }
-}
+// function getLargerBoundary(viewState: ViewStateType): BoundaryType {
+//   return {
+//     west: viewState.longitude - Math.pow(2, 11 - viewState.zoom),
+//     east: viewState.longitude + Math.pow(2, 11 - viewState.zoom),
+//     south: viewState.latitude - Math.pow(2, 11 - viewState.zoom),
+//     north: viewState.latitude + Math.pow(2, 11 - viewState.zoom)
+//   }
+// }
 
-let largerBoundary: BoundaryType = getLargerBoundary({longitude: initLon, latitude: initLat, zoom: initZoom})
+//let largerBoundary: BoundaryType = getLargerBoundary({longitude: initLon, latitude: initLat, zoom: initZoom})
 
-function updateOverlay(currentBounds: mapboxgl.LngLatBounds |  undefined, viewState: ViewStateType, 
-  setOverlay: Dispatch<SetStateAction<FeatureCollection | undefined>>): void{
-  if (currentBounds !== undefined && 
-    (currentBounds.getWest() < largerBoundary.west|| currentBounds.getEast() > largerBoundary.east ||
-    currentBounds.getSouth() < largerBoundary.south || currentBounds.getNorth() > largerBoundary.north)) {
-     //)
-    }
-}
+// function updateOverlay(currentBounds: mapboxgl.LngLatBounds |  undefined, viewState: ViewStateType, 
+//   setOverlay: Dispatch<SetStateAction<FeatureCollection | undefined>>): void{
+//   if (currentBounds !== undefined && 
+//     (currentBounds.getWest() < largerBoundary.west|| currentBounds.getEast() > largerBoundary.east ||
+//     currentBounds.getSouth() < largerBoundary.south || currentBounds.getNorth() > largerBoundary.north)) {
+//      largerBoundary = getLargerBoundary(viewState)
+//      fetchRedLineData(largerBoundary.south, largerBoundary.north, largerBoundary.west, 
+//       largerBoundary.east )
+//       .then((data) => {setOverlay(data)})
+//     }
+// }
 
 
  
@@ -118,8 +123,13 @@ export default function MapBox() {
         pitch={viewState.pitch}
         bearing={viewState.bearing}
         padding={viewState.padding}
-        onMove={(ev: ViewStateChangeEvent) => setViewState(ev.viewState)} 
-        onClick={(ev: MapLayerMouseEvent) => onClickFunc(ev, mapRef, setAreaData)} //console.log(ev)}
+        onMove={(ev: ViewStateChangeEvent) => {
+          setViewState(ev.viewState);
+         // updateOverlay(mapRef.current?.getMap().getBounds(),viewState,setOverlay)
+        }} 
+        onClick={(ev: MapLayerMouseEvent) => {
+          console.log(mapRef.current);
+          onClickFunc(ev, mapRef, setAreaData)}} //console.log(ev)}
         style={{width:window.innerWidth, height:window.innerHeight*0.9}} 
         mapStyle={'mapbox://styles/mapbox/light-v10'}>
           <Source id="geo_data" type="geojson" data={overlay}>
