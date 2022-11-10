@@ -10,6 +10,11 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
 
+
+//http://localhost:3231/redlineData?min_lat=33.464099&max_lat=33.475366&min_lon=-112.093494&max_lon=-112.061602
+
+//http://localhost:3231/redlineData?min_lat=33.454037&max_lat=33.466779&min_lon=-112.102899&max_lon=-112.092607
+
 public class RedlineHandler implements Route{
     private FeatureCollection redLiningData;
 
@@ -25,7 +30,7 @@ public class RedlineHandler implements Route{
         this.maxLat = null;
         this.minLong = null;
         this.maxLong = null;
-       
+
         try{
             Path filepath = Path.of("frontend/src/mockData/fullDownload.json");
             String RedlineJSON =  Files.readString(filepath);
@@ -41,22 +46,19 @@ public class RedlineHandler implements Route{
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        this.minLat = request.queryParams("minLat");
-        this.maxLat = request.queryParams("maxLat");
-        this.minLong = request.queryParams("minLong");
-        this.maxLong = request.queryParams("maxLong");
-     
+        this.minLat = request.queryParams("min_lat");
+        this.maxLat = request.queryParams("max_lat");
+        this.minLong = request.queryParams("min_lon");
+        this.maxLong = request.queryParams("max_lon");
 
         if (this.minLat == null | this.maxLat == null |  this.minLong == null |  this.maxLong == null) {
+            System.out.println("something is null");
             return this.redlineResponse("error_bad_request", null); // what should filtered data be? String that says none? 
         }
         else{
-
             List<Feature> filteredData= this.filterFeatures(this.minLat, this.maxLat, this.minLong, this.maxLong);
             return this.redlineResponse("success", filteredData);
         }
-
-
     }
 
     public Object redlineResponse(String successResponse, Object filteredData){
@@ -93,8 +95,8 @@ public class RedlineHandler implements Route{
                 for (List<Float> coordinates : totalBounds){
                     float lon = coordinates.get(0);
                     float lat = coordinates.get(1);
-                    if (lon < minLongFloat || lon > minLongFloat || lat < minLatFloat || lat > minLatFloat){
-                        continue;
+                    if (lon < minLongFloat || lon > maxLongFloat || lat < minLatFloat || lat > maxLatFloat){
+                        continue loop;
                     }
                     
                 }
