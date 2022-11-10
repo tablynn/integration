@@ -1,6 +1,5 @@
 {
-  "homepage": "https://tnelson.github.io/reactNYT/",
-  "name": "react-nyt",
+  "name": "integration",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
