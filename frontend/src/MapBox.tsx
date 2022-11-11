@@ -42,11 +42,13 @@ const onClickFunc = (e: MapLayerMouseEvent, mapRef: RefObject<MapRef>, setAreaDa
     console.log("before if" );
     //necessary in case the location doesn't have a name
    // const locationName: string = Object.hasOwn(featureProperties, 'name') ? feature.properties?.name : "No data";
+    const locationName: string = feature.properties?.name !== undefined ? feature.properties?.name : "No data"
+    console.log("name: " + feature.properties?.name)
     console.log("city is " + feature.properties?.city );//+ feature.properties?.city);
     setAreaData({
       city: feature.properties?.city,
       state: feature.properties?.state,
-      name: feature.properties?.name !== undefined ? feature.properties?.name : "No data"
+      name: locationName,
     })
     } else{
       setAreaData({
