@@ -12,10 +12,12 @@ ceng4 and ahudda1
 Estimated time: 
 
 ## DESIGN CHOICES
+We decided to create a RedlineHandler class that filters the features in the fulldownload.json based on the minimum and maximum latitude and minimum and maximum longitude from the query parameters. In this class, we take the query parameters and filter the json data based on the bounded box. We then return this data in response map, which has been adapted using Moshi. 
 
+We also chose to import our entire sprint 2 into integration, creating a frontend and a backend folders for our code. Our backend is the copied sprint 2 code, plus the added RedlineHandler class and a RedlineHandlerTest class. Because of the additions, we are able to run the API Server with our "bounded box", returning the filtered features. The frontend handles creating the map. This means setting up all React components and the MapBox.tsx class, creating the map and allowing all the interactions including clicking and dragging.  
 
 ##ERRORS & BUGS
-
+- When clicking on an area of the map, the state, city, and name is covered slightly by the other writing. It is still readable, but probably not ideal
 
 ##TESTING
 
@@ -25,4 +27,9 @@ Estimated time:
 To use our map, the user must run our local host. To do so, you can run npm start in the terminal. The map will then open in a browser. From there, you can drag and move the map however you like, zooming in to whichever city you prefer. 
 
 ###User Story 2:
-After running npm start in the terminal, the map will open in the browser with the historical redlining data as an overlay over the map. Depending on which city you choose to zoom into, there may or may not be redlining data. S
+After running npm start in the terminal, the map will open in the browser with the historical redlining data as an overlay over the map. Depending on which city you choose to zoom into, there may or may not be redlining data. 
+
+For the S with distinction portion of user story 2, clicking on an area of the map will show the state, city, and name on the screen under the map. There is sometimes a null or empty value if the original data does not provide it for the specific city that is clicked on. 
+
+###User Story 3:
+To access the redlining data from the API server, first run the server in the backend from IntelliJ. Then, you can type in the link: "http://localhost:3231/redlineData?" + the minimum latitude, maximum latitude, minimum longitude, and maxiumum longitude into your browser. The resulting data will be the redlining GeoJSON dataset filtered geographically by the inputted min/max latitude/longitude created box. The data will appear in the format of a list of features.
