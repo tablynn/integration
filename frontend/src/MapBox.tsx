@@ -6,9 +6,18 @@ import { myKey } from './private/key'
 import {overlayData, geoLayer, fetchRedLineData} from './overlays' 
 import mapboxgl from 'mapbox-gl';
 
+/**
+ * Creates the mapBox and users the overlays class to layer the redlining overlay data
+ */
+
 const initLon: number =  -74.0060;//-71.4128;
 const initLat: number =40.7128;//41.8240; 
 const initZoom: number = 10;
+
+
+/**
+ * interface to get city,state, and name of location -- used for S_DIST
+ */
 
 interface AreaInformation {
   city: string,
@@ -16,7 +25,13 @@ interface AreaInformation {
   name: string
 }
 
-
+/**
+ * Function setting the city, state, and name of location when the user clicks on 
+ * a specific spot on the map
+ * @param e  -- mouse event
+ * @param mapRef -- reference property of map
+ * @param setAreaData -- sets the area data of current location if valid data
+ */
 
 const onClickFunc = (e: MapLayerMouseEvent, mapRef: RefObject<MapRef>, setAreaData: Dispatch<SetStateAction<AreaInformation>> ): void => {
   const bbox: [PointLike, PointLike] = [
@@ -54,6 +69,11 @@ const onClickFunc = (e: MapLayerMouseEvent, mapRef: RefObject<MapRef>, setAreaDa
     
   }
 }
+
+/**
+ * Sets the overlay on the map and creates positioning of map
+ * @returns -- map set up amnd display of current city, state, and name
+ */
 
 export default function MapBox() {
   // Attributes of Mapbox

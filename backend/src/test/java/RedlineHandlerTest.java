@@ -15,7 +15,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.WeatherHandler;
+import server.RedlineHandler;
 import spark.Spark;
 
 public class RedlineHandlerTest {
@@ -31,7 +31,7 @@ public class RedlineHandlerTest {
   @BeforeEach
   public void setup(){
     // Restart spark
-    Spark.get("weather", new WeatherHandler());
+    Spark.get("redlineData", new RedlineHandler());
     Spark.init();
     Spark.awaitInitialization();
   }
@@ -42,7 +42,7 @@ public class RedlineHandlerTest {
   @AfterEach
   public void teardown(){
     // Stops spark form listening on both endpoints
-    Spark.unmap("weather");
+    Spark.unmap("redlineData");
     Spark.awaitStop();
   }
 
@@ -59,6 +59,22 @@ public class RedlineHandlerTest {
 
     clientConnection.connect();
     return clientConnection;
+  }
+
+  @Test
+  public void noFilterSuccess() throws Exception{
+    HttpURLConnection clientConnection = tryRequest("redlineData?min_lat=0&max_lat=1&min_lon=0&max_lon=1");
+    assertEquals(200, clientConnection.getResponseCode());
+
+    Moshi moshi = new Moshi.Builder().build();
+    Map response = moshi.adapter(Map.class).fromJson(new Buffer().readFrom(
+      clientConnection.getInputStream()));
+
+      assertEquals("succes", response.get("features").toString());
+      assertEquals("[]", response.get("features").toString());
+
+  clientConnection.disconnect();    
+
   }
 
   

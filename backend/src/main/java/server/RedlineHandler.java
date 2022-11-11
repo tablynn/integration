@@ -11,6 +11,15 @@ import java.nio.file.*;
 import java.util.*;
 
 
+
+/**
+ * The RedlineHandler class implements the Route interface, including the Handle method, which
+ * returns the serialized JSONs using Moshi. Returns if redline request was a success or if there 
+ * was an error. If there was a success, the localhost displays the correct data bounded
+ * by the user's input of min/ max latitude/longitude
+ */
+
+
 //http://localhost:3231/redlineData?min_lat=33.464099&max_lat=33.475366&min_lon=-112.093494&max_lon=-112.061602
 
 //http://localhost:3231/redlineData?min_lat=33.454037&max_lat=33.466779&min_lon=-112.102899&max_lon=-112.092607
@@ -24,6 +33,9 @@ public class RedlineHandler implements Route{
     private String maxLong;
 
 
+    /**
+     * creating the filepath linked to the fullDownload json
+     */
 
     public RedlineHandler(){
         this.minLat = null;
@@ -37,11 +49,17 @@ public class RedlineHandler implements Route{
             Moshi moshi = new Moshi.Builder().build();
             this.redLiningData = moshi.adapter(FeatureCollection.class).fromJson(RedlineJSON);
 
-        }catch(IOException e){
+        }catch(IOException ignored){
             // error responses
             System.out.println("erorr");
         }
     }
+
+    /**
+     * Accepts the users minimum/maximum latitude and longitude. checks if these inputs are null.
+     * If not, function puts the inputs into a filteredData list and returns a map
+     * linking from "success" to the filteredData
+     */
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -59,6 +77,14 @@ public class RedlineHandler implements Route{
             return this.redlineResponse("success", filteredData);
         }
     }
+
+    /**
+     * Returning the repsonse of the users request 
+     * @param successResponse -- checks if success or failure
+     * @param filteredData -- data from fullDownload inside of user's inputs
+     * @return -- serialized map showing the result, max/ min coordinates, and the 
+     * filtered data
+     */
 
     public Object redlineResponse(String successResponse, Object filteredData){
         Map<String, Object> responseMap = new HashMap<>();
@@ -79,6 +105,16 @@ public class RedlineHandler implements Route{
         Moshi moshi = new Moshi.Builder().build();
         return moshi.adapter(Map.class).toJson(responseMap);
     }
+
+    /**
+     * Filters the features on the fullDownload json to find the data inside of the 
+     * users coordinates
+     * @param minLat -- users min latitude
+     * @param maxLat -- users max latitude
+     * @param minLong -- users min longitude
+     * @param maxLong -- users max longitude 
+     * @return -- the filtered features data 
+     */
 
     public List<Feature> filterFeatures(String minLat, String maxLat, String minLong, String maxLong){
         Float minLatFloat = Float.parseFloat(minLat);

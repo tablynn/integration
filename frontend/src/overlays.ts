@@ -7,6 +7,15 @@ import rl_data from "./mockData/fullDownload.json";
 
 const ourURL = "http://localhost:3232/";
 
+/**
+ * Mocking API call to get redLineData
+ * @param minLat -- users minimum latitude
+ * @param minLong  -- users minimum longitude
+ * @param maxLat  -- users maximum latitude
+ * @param maxLong  -- users maximum longitude
+ * @returns -- returns the redlineData or undefined if the data is not valid
+ */
+
 export function fetchRedLineData(
     minLat: number,
     minLong: number,
@@ -25,10 +34,20 @@ export function fetchRedLineData(
     });
 }
 
-// Type predicate for FeatureCollection
+/**
+ * Thpe predicate for feature collection
+ * @param json -- json file
+ * @returns -- data relating to FeatureCollection
+ */
+
 function isFeatureCollection(json: any): json is FeatureCollection {
     return json.type === "FeatureCollection"
 }
+
+/**
+ * checks if the FeatureCollection of the fullDownload JSON is valid 
+ * @returns --  fullDown data if valid, undefined if not
+ */
 
 export function overlayData(): GeoJSON.FeatureCollection | undefined {
   if(isFeatureCollection(rl_data))
