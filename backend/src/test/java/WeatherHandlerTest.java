@@ -54,21 +54,6 @@ public class WeatherHandlerTest {
   }
 
   /**
-   * Helper to start a connection to a specific API endpoint/params
-   * @param apiCall the call string, including endpoint
-   * @return the connection for the given URL, just after connecting
-   * @throws IOException if the connection fails for some reason
-   */
-  static private HttpURLConnection tryRequest(String apiCall) throws IOException {
-    // Configure connection (but don't actually send the request yet)
-    URL requestURL = new URL("http://localhost:" + Spark.port() + "/" + apiCall);
-    HttpURLConnection clientConnection = (HttpURLConnection) requestURL.openConnection();
-
-    clientConnection.connect();
-    return clientConnection;
-  }
-
-  /**
    * Tests that weather called without both query parameters (latitude and longitude) provided
    * prints error_bad_request.
    */

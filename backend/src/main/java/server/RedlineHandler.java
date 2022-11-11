@@ -34,13 +34,12 @@ public class RedlineHandler implements Route{
         try{
             Path filepath = Path.of("frontend/src/mockData/fullDownload.json");
             String RedlineJSON =  Files.readString(filepath);
-    
-
             Moshi moshi = new Moshi.Builder().build();
             this.redLiningData = moshi.adapter(FeatureCollection.class).fromJson(RedlineJSON);
 
         }catch(IOException e){
             // error responses
+            System.out.println("erorr");
         }
     }
 
@@ -64,16 +63,18 @@ public class RedlineHandler implements Route{
     public Object redlineResponse(String successResponse, Object filteredData){
         Map<String, Object> responseMap = new HashMap<>();
         
-      //  try{
+       try{
             responseMap.put("result", successResponse);
             responseMap.put("minlat", minLat);
             responseMap.put("maxLat", maxLat);
             responseMap.put("minLong", minLong);
             responseMap.put("maxLong", maxLong);
             responseMap.put("data", filteredData);
-      //  }catch(Exception e){
-      //      responseMap.put("result", "error_datasource");
-     //  }
+        }catch(NumberFormatException e){
+            responseMap.put("result", "error_bad_request");
+        }catch (NullPointerException e){
+            responseMap.put("result", "error_datasource");
+      }
         
         Moshi moshi = new Moshi.Builder().build();
         return moshi.adapter(Map.class).toJson(responseMap);
@@ -86,7 +87,6 @@ public class RedlineHandler implements Route{
         Float maxLongFloat = Float.parseFloat(maxLong);
 
         List<Feature> filteredFeatures = new ArrayList<Feature>();
-        // FINISH: filtering out loop 
         loop: for (Feature feature : this.redLiningData.features()){
             if (feature.geometry() == null){
                 continue;

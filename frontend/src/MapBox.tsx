@@ -6,8 +6,8 @@ import { myKey } from './private/key'
 import {overlayData, geoLayer, fetchRedLineData} from './overlays' 
 import mapboxgl from 'mapbox-gl';
 
-const initLon: number =  -71.4128;
-const initLat: number =41.8240; 
+const initLon: number =  -74.0060;//-71.4128;
+const initLat: number =40.7128;//41.8240; 
 const initZoom: number = 10;
 
 interface AreaInformation {
@@ -15,12 +15,6 @@ interface AreaInformation {
   state: string, 
   name: string
 }
-
-// interface ViewStateType{
-//   longitude: number,
-//   latitude: number,
-//   zoom: number
-// }
 
 
 
@@ -60,40 +54,6 @@ const onClickFunc = (e: MapLayerMouseEvent, mapRef: RefObject<MapRef>, setAreaDa
     
   }
 }
-
-// interface BoundaryType {
-//   west: number,
-//   east: number,
-//   south: number,
-//   north: number
-// }
-
-// function getLargerBoundary(viewState: ViewStateType): BoundaryType {
-//   return {
-//     west: viewState.longitude - Math.pow(2, 11 - viewState.zoom),
-//     east: viewState.longitude + Math.pow(2, 11 - viewState.zoom),
-//     south: viewState.latitude - Math.pow(2, 11 - viewState.zoom),
-//     north: viewState.latitude + Math.pow(2, 11 - viewState.zoom)
-//   }
-// }
-
-//let largerBoundary: BoundaryType = getLargerBoundary({longitude: initLon, latitude: initLat, zoom: initZoom})
-
-// function updateOverlay(currentBounds: mapboxgl.LngLatBounds |  undefined, viewState: ViewStateType, 
-//   setOverlay: Dispatch<SetStateAction<FeatureCollection | undefined>>): void{
-//   if (currentBounds !== undefined && 
-//     (currentBounds.getWest() < largerBoundary.west|| currentBounds.getEast() > largerBoundary.east ||
-//     currentBounds.getSouth() < largerBoundary.south || currentBounds.getNorth() > largerBoundary.north)) {
-//      largerBoundary = getLargerBoundary(viewState)
-//      fetchRedLineData(largerBoundary.south, largerBoundary.north, largerBoundary.west, 
-//       largerBoundary.east )
-//       .then((data) => {setOverlay(data)})
-//     }
-// }
-
-
- 
-
 
 export default function MapBox() {
   // Attributes of Mapbox
@@ -135,10 +95,7 @@ export default function MapBox() {
         pitch={viewState.pitch}
         bearing={viewState.bearing}
         padding={viewState.padding}
-        onMove={(ev: ViewStateChangeEvent) => {
-          setViewState(ev.viewState);
-         // updateOverlay(mapRef.current?.getMap().getBounds(),viewState,setOverlay)
-        }} 
+        onMove={(ev: ViewStateChangeEvent) => setViewState(ev.viewState)} 
         onClick={(ev: MapLayerMouseEvent) => {
           console.log(mapRef.current);
           onClickFunc(ev, mapRef, setAreaData)}} //console.log(ev)}
@@ -160,3 +117,42 @@ export default function MapBox() {
 }
 
 export{MapBox}
+
+
+
+// interface BoundaryType {
+//   west: number,
+//   east: number,
+//   south: number,
+//   north: number
+// }
+
+// function getLargerBoundary(viewState: ViewStateType): BoundaryType {
+//   return {
+//     west: viewState.longitude - Math.pow(2, 11 - viewState.zoom),
+//     east: viewState.longitude + Math.pow(2, 11 - viewState.zoom),
+//     south: viewState.latitude - Math.pow(2, 11 - viewState.zoom),
+//     north: viewState.latitude + Math.pow(2, 11 - viewState.zoom)
+//   }
+// }
+
+//let largerBoundary: BoundaryType = getLargerBoundary({longitude: initLon, latitude: initLat, zoom: initZoom})
+
+// function updateOverlay(currentBounds: mapboxgl.LngLatBounds |  undefined, viewState: ViewStateType, 
+//   setOverlay: Dispatch<SetStateAction<FeatureCollection | undefined>>): void{
+//   if (currentBounds !== undefined && 
+//     (currentBounds.getWest() < largerBoundary.west|| currentBounds.getEast() > largerBoundary.east ||
+//     currentBounds.getSouth() < largerBoundary.south || currentBounds.getNorth() > largerBoundary.north)) {
+//      largerBoundary = getLargerBoundary(viewState)
+//      fetchRedLineData(largerBoundary.south, largerBoundary.north, largerBoundary.west, 
+//       largerBoundary.east )
+//       .then((data) => {setOverlay(data)})
+//     }
+// }
+
+
+// interface ViewStateType{
+//   longitude: number,
+//   latitude: number,
+//   zoom: number
+// }
