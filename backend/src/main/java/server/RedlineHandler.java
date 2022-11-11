@@ -1,6 +1,7 @@
 package server;
 
 import com.squareup.moshi.Moshi;
+import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -43,7 +44,7 @@ public class RedlineHandler implements Route{
         this.minLong = null;
         this.maxLong = null;
 
-        try{
+        /*try{
             Path filepath = Path.of("frontend/src/mockData/fullDownload.json");
             String RedlineJSON =  Files.readString(filepath);
             Moshi moshi = new Moshi.Builder().build();
@@ -52,7 +53,7 @@ public class RedlineHandler implements Route{
         }catch(IOException ignored){
             // error responses
             System.out.println("erorr");
-        }
+        }  */
     }
 
     /**
@@ -63,10 +64,20 @@ public class RedlineHandler implements Route{
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
+
         this.minLat = request.queryParams("min_lat");
         this.maxLat = request.queryParams("max_lat");
         this.minLong = request.queryParams("min_lon");
         this.maxLong = request.queryParams("max_lon");
+
+      /**  Path filepath = Path.of("frontend/src/mockData/fullDownload.json");
+        String RedlineJSON =  Files.readString(filepath);
+        Moshi moshi = new Moshi.Builder().build();
+        this.redLiningData = moshi.adapter(FeatureCollection.class).fromJson(RedlineJSON); */
+        Path filePath = Path.of("frontend/src/mockData/fullDownload.json");
+        String content = Files.readString(filePath);
+        Moshi moshi = new Moshi.Builder().build();
+        this.redLiningData = moshi.adapter(FeatureCollection.class).fromJson(content);
 
         if (this.minLat == null | this.maxLat == null |  this.minLong == null |  this.maxLong == null) {
             System.out.println("something is null");
@@ -76,6 +87,8 @@ public class RedlineHandler implements Route{
             List<Feature> filteredData= this.filterFeatures(this.minLat, this.maxLat, this.minLong, this.maxLong);
             return this.redlineResponse("success", filteredData);
         }
+
+
     }
 
     /**
