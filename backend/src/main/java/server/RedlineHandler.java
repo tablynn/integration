@@ -157,6 +157,10 @@ public class RedlineHandler implements Route{
     }
      
 
+    /*
+     * Records that mock the fulldownload.json data, so that the filterFeatures method can access and run through the 
+     * different features in the data download. 
+     */
     public record FeatureCollection(String type, List<Feature> features){}
     public record Feature(String type, Geometry geometry, Map<String, Object> properties){}
     public record Geometry(String type, List<List<List<List<Float>>>> coordinates){}
