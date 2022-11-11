@@ -34,19 +34,28 @@ const onClickFunc = (e: MapLayerMouseEvent, mapRef: RefObject<MapRef>, setAreaDa
     layers: ["geo_data"],
   });
 
-  console.log("before if" );
+  
   if (choosenFeatures !== undefined){
-    const feature: MapboxGeoJSONFeature = choosenFeatures[0]; // bbox
-    const featureProperties: any = feature.properties;
-
+    const feature: MapboxGeoJSONFeature | undefined = choosenFeatures[0]; // bbox
+    if (feature !== undefined){
+    //  const featureProperties: any = feature.properties;
+    console.log("before if" );
     //necessary in case the location doesn't have a name
-    const locationName: string = Object.hasOwn(featureProperties, 'name') ? feature.properties?.name : "No data";
-    console.log("city is "  );//+ feature.properties?.city);
+   // const locationName: string = Object.hasOwn(featureProperties, 'name') ? feature.properties?.name : "No data";
+    console.log("city is " + feature.properties?.city );//+ feature.properties?.city);
     setAreaData({
       city: feature.properties?.city,
       state: feature.properties?.state,
-      name: locationName
+      name: feature.properties?.name !== undefined ? feature.properties?.name : "No data"
     })
+    } else{
+      setAreaData({
+        city: "No data",
+        state: "No data",
+        name: "No data"
+      })
+    }
+    
   }
 }
 
@@ -104,8 +113,8 @@ export default function MapBox() {
     name: "No selection"
   })
 
-  //const locationLabel: string = `City: ${areaData.city}, State: ${areaData.state}, Name: ${areaData.name}`;
-  //const currentMapPosition: string = `Current latitude: ${viewState.latitude.toFixed(4)} | Current longitude: ${viewState.longitude.toFixed(4)} | Current zoom: ${viewState.zoom.toFixed(4)}`;
+  const locationLabel: string = `City: ${areaData.city}, State: ${areaData.state}, Name: ${areaData.name}`;
+  const currentMapPosition: string = `Current latitude: ${viewState.latitude.toFixed(4)} | Current longitude: ${viewState.longitude.toFixed(4)} | Current zoom: ${viewState.zoom.toFixed(4)}`;
 
     // Run this _once_, and never refresh (empty dependency list)
     useEffect(() => {
@@ -116,6 +125,7 @@ export default function MapBox() {
     <div className="mapbox">
 
       <Map 
+        ref= {mapRef}
         mapboxAccessToken={myKey}
         latitude={viewState.latitude}
         longitude={viewState.longitude}
@@ -131,12 +141,17 @@ export default function MapBox() {
           console.log(mapRef.current);
           onClickFunc(ev, mapRef, setAreaData)}} //console.log(ev)}
         style={{width:window.innerWidth, height:window.innerHeight*0.9}} 
-        mapStyle={'mapbox://styles/mapbox/light-v10'}>
+        mapStyle={'mapbox://styles/mapbox/outdoors-v11'}>
           <Source id="geo_data" type="geojson" data={overlay}>
                     <Layer {...geoLayer} />
                   </Source>
       </Map>       
-
+          <p aria-label = {locationLabel} aria-roledescription = "Location data">
+            City: {areaData.city}, State: {areaData.state}, Name:  {areaData.name}
+          </p>
+          <p aria-label={currentMapPosition} aria-roledescription = "These are the given latitude, longitude, and zoom">
+            Current latitude: {viewState.latitude.toFixed(4)} | Current longitude: {viewState.longitude.toFixed(4)} | Current zoom: {viewState.zoom.toFixed(4)}
+          </p>
     </div>
     
   );
