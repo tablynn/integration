@@ -5,7 +5,7 @@ REPO LINK: https://github.com/cs0320-f2022/integration-eperelm2-tlynn1
 
 Contributions: 
 nharbiso and kkashyap
-- helped with understanidng how to filter features and use of records to do so
+- helped with understanding how to filter features and use of records to do so
 ceng4 and ahudda1
 - helped us understand general structure of redline handler class
 agrondin-ctulpar-wpark14
